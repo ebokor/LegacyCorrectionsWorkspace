@@ -301,8 +301,8 @@ for task in histsToWrap:
     wsptools.SafeWrapHist(w, ['gt2_pt', 'expr::gt2_abs_eta("TMath::Abs(@0)",gt2_eta[0])'],
                           GetFromTFile(task[0]), name=task[1])
 
-w.factory('expr::m_sel_trg_kit_data("(@0*@3+@1*@2-@1*@3)", m_sel_trg8_1_kit_data, m_sel_trg17_1_kit_data, m_sel_trg8_2_kit_data, m_sel_trg17_2_kit_data)')
-w.factory('expr::m_sel_trg_kit_ratio("min(1./@0,2)", m_sel_trg_kit_data)')
+w.factory('expr::m_sel_trg_data("(@0*@3+@1*@2-@1*@3)", m_sel_trg8_1_kit_data, m_sel_trg17_1_kit_data, m_sel_trg8_2_kit_data, m_sel_trg17_2_kit_data)')
+w.factory('expr::m_sel_trg_ratio("min(1./@0,2)", m_sel_trg_data)')
 
 # addressing muon selection for embedding:
 
@@ -314,7 +314,7 @@ for task in Sel_histsToWrap:
     wsptools.SafeWrapHist(w, ['gt_pt', 'expr::gt_abs_eta("TMath::Abs(@0)",gt_eta[0])'],
                           GetFromTFile(task[0]), name=task[1])
 for t in ['sel_id', "sel_idemb" ]:
-    w.factory('expr::m_%s_kit_ratio("(1.0)/@0", m_%s_kit_data)' % (t, t))
+    w.factory('expr::m_%s_ratio("(1.0)/@0", m_%s_kit_data)' % (t, t))
 
 
 # LO DYJetsToLL Z mass vs pT correction
