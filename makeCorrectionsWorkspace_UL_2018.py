@@ -22,15 +22,13 @@ ROOT.TH1.AddDirectory(0)
 ROOT.gROOT.LoadMacro("CrystalBallEfficiency.cxx+")
 
 w = ROOT.RooWorkspace('w')
-#------------------------------------------------------------------
-# Ultra Legacy Scale Factors
-#------------------------------------------------------------------
-# Muon POG tracking Scale Factors
-loc = 'input/2018UL/MuonPOG'
+
+### Muon tracking efficiency scale factor from the Tracking POG - Updated for Ultra Legacy Samples
+loc = 'inputs/2018UL/MuonPOG'
 histsToWrap = [
     (loc+'/Efficiency_muon_generalTracks_Run2018_UL_trackerMuon.root:NUM_TrackerMuons_DEN_genTracks',
      'm_trk_eff_lowpt'),
-    (loc+'NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt.root:NUM_TrackerMuons_DEN_genTracks',
+    (loc+'/NUM_TrackerMuons_DEN_genTracks_Z_abseta_pt.root:NUM_TrackerMuons_DEN_genTracks',
      'm_trk_eff_medpt')
 ]
 for task in histsToWrap:
@@ -38,10 +36,10 @@ for task in histsToWrap:
                           GetFromTFile(task[0]), name=task[1])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_pt', [3., 15., 120.],
-                                   'm_trk_binned', ['m_trk_eff_lowpt', 'm_trk_eff_medpt'])
+                                   'm_trk_ratio', ['m_trk_eff_lowpt', 'm_trk_eff_medpt'])
 
-# EGamma POG tracking Scale Factors
-loc = 'input/2018UL/EGammaPOG'
+### Electron reconstruction efficiency scale factor from the egamma POG - Updated for Ultra Legacy Samples
+loc = 'inputs/2018UL/EGammaPOG'
 histsToWrap = [
     (loc+'/egammaEffi_ptBelow20.txt_EGM2D_UL2018.root:EGamma_SF2D',
      'e_trk_ST20_ratio'),
@@ -54,176 +52,6 @@ for task in histsToWrap:
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_pt', [10., 20., 500.],
                                    'e_trk_ratio', ['e_trk_ST20_ratio', 'e_trk_GT20_ratio'])
-
-# deepTau ID SFs
-loc = 'inputs/2018UL/TauPOGTrigger/'
-tau_trg_file = ROOT.TFile(loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root')
-#tau_id_wps=['VVVLoose','VVLoose','VLoose','Loose','Medium','Tight']
-tau_id_wps=['Medium']
-
-for wp in tau_id_wps:
-  for dm in ['0','1','10',11]:
-    histsToWrap = [
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_ratio' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_ratio' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_ratio' % (wp.lower(),dm)),
-    ]
-    for task in histsToWrap:
-        wsptools.SafeWrapHist(w, ['t_pt'],
-                              GetFromTFile(task[0]), name=task[1])
-        hist = GetFromTFile(task[0])
-        uncert_hists = wsptools.UncertsFromHist(hist)
-        wsptools.SafeWrapHist(w, ['t_pt'], uncert_hists[0], name=task[1]+'_up')
-        wsptools.SafeWrapHist(w, ['t_pt'], uncert_hists[1], name=task[1]+'_down')
-
-        if 'ditau' in task[1]:
-          wsptools.SafeWrapHist(w, ['t_pt_2'],
-                                GetFromTFile(task[0]), name=task[1]+'_2')
-
-          hist = GetFromTFile(task[0])
-          uncert_hists = wsptools.UncertsFromHist(hist)
-          wsptools.SafeWrapHist(w, ['t_pt_2'], uncert_hists[0], name=task[1]+'_up_2')
-          wsptools.SafeWrapHist(w, ['t_pt_2'], uncert_hists[1], name=task[1]+'_down_2')
-
-  wp_lower = wp.lower()
-  for i in ['data','mc','ratio']:
-    for j in ['ditau','mutau', 'etau']:
-      taus=['']
-      if j == 'ditau': taus = ['', '_2']
-      for t in taus:
-        w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s("(@0==0)*@1 + (@0==1)*@2 + (@0==10||@0==5)*@3 + (@0==11||@0==6)*@4", t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm0_%(i)s%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm1_%(i)s%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm10_%(i)s%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm11_%(i)s%(t)s)' % vars())
-
-        w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_up%(t)s("@5 + ((@0==0)*@1 + (@0==1)*@2 + (@0==10||@0==5)*@3 + (@0==11||@0==6)*@4)", t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm0_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm1_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm10_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm11_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
-
-        w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_down%(t)s("@5 - ((@0==0)*@1 + (@0==1)*@2 + (@0==10||@0==5)*@3 + (@0==11||@0==6)*@4)", t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm0_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm1_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm10_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm11_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
-
-        for dm in ['0','1','10','11']:
-          w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_dm%(dm)s_down%(t)s("(@0==%(dm)s)*@1 + (@0!=%(dm)s)*@2",t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
-          w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_dm%(dm)s_up%(t)s("(@0==%(dm)s)*@1 + (@0!=%(dm)s)*@2",t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
-
-# TauID Scale Factors from Tau POG
-loc = 'inputs/2018UL/TauPOGID'
-histsToWrap = [
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVVLoose', 't_deeptauid_dm_vvvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVLoose', 't_deeptauid_dm_vvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VLoose', 't_deeptauid_dm_vloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Loose', 't_deeptauid_dm_loose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Medium', 't_deeptauid_dm_medium'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Tight', 't_deeptauid_dm_tight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VTight', 't_deeptauid_dm_vtight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVTight', 't_deeptauid_dm_vvtight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVVTight', 't_deeptauid_dm_vvvtight')
-]
-for task in histsToWrap:
-  wsptools.SafeWrapHist(w, ['t_dm_bounded'], GetFromTFile(task[0]), name=task[1])
-  uncert_hists = wsptools.UncertsFromHist(GetFromTFile(task[0]))
-  wsptools.SafeWrapHist(w, ['t_dm_bounded'], uncert_hists[0], name=task[1]+'_abs_up')
-  wsptools.SafeWrapHist(w, ['t_dm_bounded'], uncert_hists[1], name=task[1]+'_abs_down')
-  w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
-  # decay mode dependent SFs binned in DMs 0,1,10,11
-  w.factory('expr::%s_dm0_up("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm0_down("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-  w.factory('expr::%s_dm1_up("(@0==1)*@1 + (@0!=1)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm1_down("(@0==1)*@1 + (@0!=1)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-  w.factory('expr::%s_dm10_up("(@0==10)*@1 + (@0!=10)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm10_down("(@0==10)*@1 + (@0!=10)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-  w.factory('expr::%s_dm11_up("(@0==11)*@1 + (@0!=11)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm11_down("(@0==11)*@1 + (@0!=11)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-# pT dependent SFs
-sf_funcs = {}
-tauid_pt_file = ROOT.TFile(loc+'/TauID_SF_pt_DeepTau2017v2p1VSjet_UL2018.root')
-for i in ['VVVLoose', 'VVLoose', 'VLoose', 'Loose', 'Medium', 'Tight', 'VTight', 'VVTight']:
-  for j in ['cent', 'up', 'down']:
-    fname = '%s_%s' % (i,j)
-    fit = tauid_pt_file.Get(fname)
-    outname = i.lower()
-    if j != 'cent': outname+='_%s' % j
-    sf_funcs[outname] = fit.GetTitle()
-
-for x in sf_funcs:
-  func = re.sub('x','@0',sf_funcs[x])
-  w.factory('expr::t_deeptauid_pt_%s("%s",t_pt[0])' % (x, func))
-
-for i in ['vvvloose', 'vvloose', 'vloose', 'loose', 'medium', 'tight', 'vtight', 'vvtight']:
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin1_up("(@0>20&&@0<=25)*@1 + ((@0>20&&@0<=25)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin1_down("(@0>20&&@0<=25)*@1 + ((@0>20&&@0<=25)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin2_up("(@0>25&&@0<=30)*@1 + ((@0>25&&@0<=30)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin2_down("(@0>25&&@0<=30)*@1 + ((@0>25&&@0<=30)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin3_up("(@0>30&&@0<=35)*@1 + ((@0>30&&@0<=35)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin3_down("(@0>30&&@0<=35)*@1 + ((@0>30&&@0<=35)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin4_up("(@0>35&&@0<=40)*@1 + ((@0>35&&@0<=40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin4_down("(@0>35&&@0<=40)*@1 + ((@0>35&&@0<=40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin5_up("(@0>40&&@0<=500)*@1 + ((@0>40&&@0<=500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin5_down("(@0>40&&@0<=500)*@1 + ((@0>40&&@0<=500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  #w.factory('expr::t_deeptauid_pt_%(i)s_bin5_up("(@0>40)*@1 + ((@0>40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  #w.factory('expr::t_deeptauid_pt_%(i)s_bin5_down("(@0>40)*@1 + ((@0>40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin6_up("(@0>500)*@1 + ((@0>500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin6_down("(@0>500)*@1 + ((@0>500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_dm_%(i)s_bin6_up("((@0>500)*@1/@2 + ((@0>500)==0))*@3",t_pt[0], t_deeptauid_pt_%(i)s_bin6_up, t_deeptauid_pt_%(i)s, t_deeptauid_dm_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_dm_%(i)s_bin6_down("((@0>500)*@1/@2 + ((@0>500)==0))*@3",t_pt[0], t_deeptauid_pt_%(i)s_bin6_down, t_deeptauid_pt_%(i)s, t_deeptauid_dm_%(i)s)' % vars())
-
-# l->tau fake scale factors
-loc='inputs/2018UL/TauPOGID/'
-histsToWrap = [
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VVLoose', 't_id_vs_e_eta_vvloose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VLoose', 't_id_vs_e_eta_vloose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:Loose',  't_id_vs_e_eta_loose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:Medium', 't_id_vs_e_eta_medium'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:Tight',  't_id_vs_e_eta_tight'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VTight', 't_id_vs_e_eta_vtight'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VVTight', 't_id_vs_e_eta_vvtight'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:VLoose', 't_id_vs_mu_eta_vloose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:Loose',  't_id_vs_mu_eta_loose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:Medium', 't_id_vs_mu_eta_medium'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:Tight',  't_id_vs_mu_eta_tight'),
-]
-
-w.factory('expr::t_eta_bounded("min(2.3,TMath::Abs(@0))" ,t_eta[0])')
-
-for task in histsToWrap:
-  wsptools.SafeWrapHist(w, ['t_eta_bounded'], GetFromTFile(task[0]), name=task[1])
-  uncert_hists = wsptools.UncertsFromHist(GetFromTFile(task[0]))
-  wsptools.SafeWrapHist(w, ['t_eta_bounded'], uncert_hists[0], name=task[1]+'_abs_up')
-  wsptools.SafeWrapHist(w, ['t_eta_bounded'], uncert_hists[1], name=task[1]+'_abs_down')
-  w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
-
-#------------------------------------------------------------------
-# END of Ultra Legacy Scale Factors
-#------------------------------------------------------------------
-
-### Muon tracking efficiency scale factor from the Tracking POG
-loc = 'inputs/2018/TrackingPOG'
-
-muon_trk_eff_hist = wsptools.TGraphAsymmErrorsToTH1D(GetFromTFile(loc+'/fits.root:ratio_eff_eta3_dr030e030_corr'))
-wsptools.SafeWrapHist(w, ['m_eta'], muon_trk_eff_hist, name='m_trk_ratio')
-
-### Electron reconstruction efficiency scale factor from the egamma POG
-loc = 'inputs/2018/EGammaPOG'
-
-electron_trk_eff_hist = GetFromTFile(loc+'/egammaEffi.txt_EGM2D_updatedAll_2018.root:EGamma_SF2D')
-electron_reco_eff_hist = GetFromTFile(loc+'/egammaEffi.txt_EGM2D_updatedAll_2018.root:EGamma_SF2D')
-wsptools.SafeWrapHist(w, ['e_eta','e_pt'], electron_trk_eff_hist, name='e_trk_ratio')
-
-wsptools.SafeWrapHist(w, ['e_eta','e_pt'], electron_reco_eff_hist, name='e_reco_ratio')
 
 # for embedded we (IC) derived an additional correction based on the MC and embedding reco efficiency differences, these are applied on top of the usual data/MC SFs
 # note this is not needed for muons as differences between embedding and MC are very small
@@ -1233,6 +1061,60 @@ for wp in tau_id_wps:
 
     w.factory('expr::t_trg_%s_%s_ratio_down("(@1>0)*(@3>0)*(1.-sqrt(pow((@1-@0)/@1,2) + pow((@3-@2)/@3,2)))*@4",t_trg_%s_%s_data_down, t_trg_%s_%s_data, t_trg_%s_%s_mc_down, t_trg_%s_%s_mc, t_trg_%s_%s_ratio)' % (wp, y, wp, y, wp, y, wp, y, wp, y, wp, y))
 
+# deepTau ID SFs - Updated for Ultra Legacy Samples
+
+loc = 'inputs/2018UL/TauPOGTrigger/'
+tau_trg_file = ROOT.TFile(loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root')
+#tau_id_wps=['VVVLoose','VVLoose','VLoose','Loose','Medium','Tight']
+tau_id_wps=['Medium']
+
+for wp in tau_id_wps:
+  for dm in ['0','1','10','11']:
+    histsToWrap = [
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_ratio' % (wp.lower(),dm)),
+    ]
+    for task in histsToWrap:
+        wsptools.SafeWrapHist(w, ['t_pt'],
+                              GetFromTFile(task[0]), name=task[1])
+        hist = GetFromTFile(task[0])
+        uncert_hists = wsptools.UncertsFromHist(hist)
+        wsptools.SafeWrapHist(w, ['t_pt'], uncert_hists[0], name=task[1]+'_up')
+        wsptools.SafeWrapHist(w, ['t_pt'], uncert_hists[1], name=task[1]+'_down')
+
+        if 'ditau' in task[1]:
+          wsptools.SafeWrapHist(w, ['t_pt_2'],
+                                GetFromTFile(task[0]), name=task[1]+'_2')
+
+          hist = GetFromTFile(task[0])
+          uncert_hists = wsptools.UncertsFromHist(hist)
+          wsptools.SafeWrapHist(w, ['t_pt_2'], uncert_hists[0], name=task[1]+'_up_2')
+          wsptools.SafeWrapHist(w, ['t_pt_2'], uncert_hists[1], name=task[1]+'_down_2')
+
+  wp_lower = wp.lower()
+  for i in ['data','mc','ratio']:
+    for j in ['ditau','mutau', 'etau']:
+      taus=['']
+      if j == 'ditau': taus = ['', '_2']
+      for t in taus:
+        w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s("(@0==0)*@1 + (@0==1 || @0==2)*@2 + (@0==10||@0==5)*@3 + (@0==11||@0==6)*@4", t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm0_%(i)s%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm1_%(i)s%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm10_%(i)s%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm11_%(i)s%(t)s)' % vars())
+
+        w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_up%(t)s("@5 + ((@0==0)*@1 + (@0==1 || @0==2)*@2 + (@0==10||@0==5)*@3 + (@0==11||@0==6)*@4)", t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm0_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm1_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm10_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm11_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
+
+        w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_down%(t)s("@5 - ((@0==0)*@1 + (@0==1 || @0==2)*@2 + (@0==10||@0==5)*@3 + (@0==11||@0==6)*@4)", t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm0_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm1_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm10_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_dm11_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
+
+        for dm in ['0','1','10','11']:
+          w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_dm%(dm)s_down%(t)s("(@0==%(dm)s)*@1 + (@0!=%(dm)s)*@2",t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_down%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
+          w.factory('expr::t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_dm%(dm)s_up%(t)s("(@0==%(dm)s)*@1 + (@0!=%(dm)s)*@2",t_dm%(t)s[0], t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s_up%(t)s, t_trg_pog_deeptau_%(wp_lower)s_%(j)s_%(i)s%(t)s)' % vars())
+
+
 ## IC tau trigger SFs in bins of DM and MVA-DM
 
 loc = 'inputs/IC_tau_trigger/'
@@ -1504,7 +1386,7 @@ histsToWrap = [
   (loc+'/TauID_SF_dm_MVAoldDM2017v2_2018.root:VVTight', 't_id_dm_vvtight')
 ]
 
-w.factory('expr::t_dm_bounded("(@0<2)*@0 + (@0>2)*10" ,t_dm[0])')
+w.factory('expr::t_dm_bounded("(@0<2)*@0 +(@0==2)*1 + (@0>2&&@0<11)*10 + (@0>10)*11" ,t_dm[0])')
 
 for task in histsToWrap: 
   wsptools.SafeWrapHist(w, ['t_dm_bounded'], GetFromTFile(task[0]), name=task[1])
@@ -1542,31 +1424,19 @@ for x in sf_funcs:
   func = re.sub('x','@0',sf_funcs[x])
   w.factory('expr::t_id_pt_%s("%s",t_pt[0])' % (x, func))
 
-# PRELIMINARY differential tau ID SFs for deepTau ID from Yuta
-
+# TauID Scale Factors from Tau POG - Updated for Ultra Legacy Samples
 # dm binned SFs
-
-loc='inputs/2018/TauPOGIDSFs/'
-
+loc = 'inputs/2018UL/TauPOGID'
 histsToWrap = [
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:VVVLoose', 't_deeptauid_dm_vvvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:VVLoose',  't_deeptauid_dm_vvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:VLoose',   't_deeptauid_dm_vloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:Loose',    't_deeptauid_dm_loose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:Medium',   't_deeptauid_dm_medium'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:Tight',    't_deeptauid_dm_tight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:VTight',   't_deeptauid_dm_vtight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco.root:VVTight',  't_deeptauid_dm_vvtight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:VVVLoose', 't_deeptauid_dm_embed_vvvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:VVLoose',  't_deeptauid_dm_embed_vvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:VLoose',   't_deeptauid_dm_embed_vloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:Loose',    't_deeptauid_dm_embed_loose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:Medium',   't_deeptauid_dm_embed_medium'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:Tight',    't_deeptauid_dm_embed_tight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:VTight',   't_deeptauid_dm_embed_vtight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_2018ReReco_EMB.root:VVTight',  't_deeptauid_dm_embed_vvtight')
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVVLoose', 't_deeptauid_dm_vvvloose'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVLoose', 't_deeptauid_dm_vvloose'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VLoose', 't_deeptauid_dm_vloose'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Loose', 't_deeptauid_dm_loose'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Medium', 't_deeptauid_dm_medium'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Tight', 't_deeptauid_dm_tight'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VTight', 't_deeptauid_dm_vtight'),
+  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVTight', 't_deeptauid_dm_vvtight'),
 ]
-
 for task in histsToWrap:
   wsptools.SafeWrapHist(w, ['t_dm_bounded'], GetFromTFile(task[0]), name=task[1])
   uncert_hists = wsptools.UncertsFromHist(GetFromTFile(task[0]))
@@ -1574,7 +1444,7 @@ for task in histsToWrap:
   wsptools.SafeWrapHist(w, ['t_dm_bounded'], uncert_hists[1], name=task[1]+'_abs_down')
   w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
   w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
-
+  # decay mode dependent SFs binned in DMs 0,1,10,11
   w.factory('expr::%s_dm0_up("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
   w.factory('expr::%s_dm0_down("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
 
@@ -1587,13 +1457,9 @@ for task in histsToWrap:
   w.factory('expr::%s_dm11_up("(@0==11)*@1 + (@0!=11)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
   w.factory('expr::%s_dm11_down("(@0==11)*@1 + (@0!=11)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
 
-
 # pT dependent SFs
-
 sf_funcs = {}
-
-sf_funcs = {}
-tauid_pt_file = ROOT.TFile(loc+'/TauID_SF_pt_DeepTau2017v2p1VSjet_2018ReReco.root')
+tauid_pt_file = ROOT.TFile(loc+'/TauID_SF_pt_DeepTau2017v2p1VSjet_UL2018.root')
 for i in ['VVVLoose', 'VVLoose', 'VLoose', 'Loose', 'Medium', 'Tight', 'VTight', 'VVTight']:
   for j in ['cent', 'up', 'down']:
     fname = '%s_%s' % (i,j)
@@ -1601,7 +1467,6 @@ for i in ['VVVLoose', 'VVLoose', 'VLoose', 'Loose', 'Medium', 'Tight', 'VTight',
     outname = i.lower()
     if j != 'cent': outname+='_%s' % j
     sf_funcs[outname] = fit.GetTitle()
-
 
 for x in sf_funcs:
   func = re.sub('x','@0',sf_funcs[x])
@@ -1634,7 +1499,7 @@ for i in ['vvvloose', 'vvloose', 'vloose', 'loose', 'medium', 'tight', 'vtight',
 
 # embedded SFs
 
-sf_funcs = {}
+loc='inputs/2018/TauPOGIDSFs/'
 
 sf_funcs = {}
 tauid_pt_file = ROOT.TFile(loc+'/TauID_SF_pt_DeepTau2017v2p1VSjet_2018ReReco_EMB.root')
@@ -1786,21 +1651,19 @@ for i in ['','embed_']:
   w.factory('expr::t_deeptauid_mvadm_%(i)smedium_tightvsele_highpt_mvadm11_down("(@3>=40)*((@0==11)*(@2-@1) + (@0!=11)*@2 ) +(@3<40)*@2", t_mvadm[0], t_deeptauid_mvadm_%(i)smedium_tightvsele_down, t_deeptauid_mvadm_%(i)smedium_tightvsele, t_pt)' % vars())
 
 # l->tau fake scale factors
-
-loc='inputs/2018/TauPOGIDSFs/'
-
+loc='inputs/2018UL/TauPOGID/'
 histsToWrap = [
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_2018ReReco.root:VVLoose', 't_id_vs_e_eta_vvloose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_2018ReReco.root:VLoose', 't_id_vs_e_eta_vloose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_2018ReReco.root:Loose',  't_id_vs_e_eta_loose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_2018ReReco.root:Medium', 't_id_vs_e_eta_medium'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_2018ReReco.root:Tight',  't_id_vs_e_eta_tight'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_2018ReReco.root:VTight', 't_id_vs_e_eta_vtight'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_2018ReReco.root:VLoose', 't_id_vs_mu_eta_vloose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_2018ReReco.root:Loose',  't_id_vs_mu_eta_loose'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_2018ReReco.root:Medium', 't_id_vs_mu_eta_medium'),
-  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_2018ReReco.root:Tight',  't_id_vs_mu_eta_tight'),
-
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VVLoose', 't_id_vs_e_eta_vvloose'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VLoose', 't_id_vs_e_eta_vloose'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:Loose',  't_id_vs_e_eta_loose'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:Medium', 't_id_vs_e_eta_medium'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:Tight',  't_id_vs_e_eta_tight'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VTight', 't_id_vs_e_eta_vtight'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSe_UL2018.root:VVTight', 't_id_vs_e_eta_vvtight'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:VLoose', 't_id_vs_mu_eta_vloose'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:Loose',  't_id_vs_mu_eta_loose'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:Medium', 't_id_vs_mu_eta_medium'),
+  (loc+'/TauID_SF_eta_DeepTau2017v2p1VSmu_UL2018.root:Tight',  't_id_vs_mu_eta_tight'),
 ]
 
 w.factory('expr::t_eta_bounded("min(2.3,TMath::Abs(@0))" ,t_eta[0])')
@@ -2087,6 +1950,6 @@ w.importClassCode('CrystalBallEfficiency')
 
 w.Print()
 
-w.writeToFile('output/htt_scalefactors_legacy_2018.root')
+w.writeToFile('output/htt_scalefactors_UL_2018.root')
 
 w.Delete()
