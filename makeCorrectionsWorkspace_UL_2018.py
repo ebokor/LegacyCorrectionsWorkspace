@@ -145,7 +145,7 @@ for task in histsToWrap:
   w.factory('expr::%s_dm0_up("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
   w.factory('expr::%s_dm0_down("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
 
-  w.factory('expr::%s_dm1_up("(@0==1)*@1 + (@0!=1)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
+  w.factory('expr::%s_dm1_up("(@0==1)*@1  + (@0!=1)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
   w.factory('expr::%s_dm1_down("(@0==1)*@1 + (@0!=1)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
 
   w.factory('expr::%s_dm10_up("(@0==10)*@1 + (@0!=10)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
@@ -397,6 +397,6 @@ w.importClassCode('CrystalBallEfficiency')
 
 w.Print()
 
-w.writeToFile('output/htt_scalefactors_UL_2018_test.root')
+w.writeToFile('output/htt_scalefactors_UL_2018.root')
 
 w.Delete()
