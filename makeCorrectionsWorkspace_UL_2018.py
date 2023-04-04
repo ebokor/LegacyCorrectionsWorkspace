@@ -6,6 +6,7 @@ from array import array
 import numpy as np
 import math
 import re
+import os
 
 wsptools = imp.load_source('wsptools', 'workspaceTools.py')
 
@@ -121,78 +122,24 @@ for wp in tau_id_wps:
 ##################################
 w.factory('expr::t_dm_bounded("(@0<2)*@0 +(@0==2)*1 + (@0>2&&@0<11)*10 + (@0>10)*11" ,t_dm[0])')
 
-
-# dm binned SFs
+# dm and pT-dependent SFs
 loc = 'inputs/2018UL/TauPOGID'
-histsToWrap = [
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVVLoose', 't_deeptauid_dm_vvvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVLoose', 't_deeptauid_dm_vvloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VLoose', 't_deeptauid_dm_vloose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Loose', 't_deeptauid_dm_loose'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Medium', 't_deeptauid_dm_medium'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:Tight', 't_deeptauid_dm_tight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VTight', 't_deeptauid_dm_vtight'),
-  (loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_UL2018.root:VVTight', 't_deeptauid_dm_vvtight'),
-]
-for task in histsToWrap:
-  wsptools.SafeWrapHist(w, ['t_dm_bounded'], GetFromTFile(task[0]), name=task[1])
-  uncert_hists = wsptools.UncertsFromHist(GetFromTFile(task[0]))
-  wsptools.SafeWrapHist(w, ['t_dm_bounded'], uncert_hists[0], name=task[1]+'_abs_up')
-  wsptools.SafeWrapHist(w, ['t_dm_bounded'], uncert_hists[1], name=task[1]+'_abs_down')
-  w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
-  # decay mode dependent SFs binned in DMs 0,1,10,11
-  w.factory('expr::%s_dm0_up("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm0_down("(@0==0)*@1 + (@0!=0)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-  w.factory('expr::%s_dm1_up("(@0==1)*@1  + (@0!=1)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm1_down("(@0==1)*@1 + (@0!=1)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-  w.factory('expr::%s_dm10_up("(@0==10)*@1 + (@0!=10)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm10_down("(@0==10)*@1 + (@0!=10)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-  w.factory('expr::%s_dm11_up("(@0==11)*@1 + (@0!=11)*@2 ", t_dm[0], %s_up, %s)' % (task[1],task[1],task[1]))
-  w.factory('expr::%s_dm11_down("(@0==11)*@1 + (@0!=11)*@2 ", t_dm[0], %s_down, %s)' % (task[1],task[1],task[1]))
-
-# pT dependent SFs
 sf_funcs = {}
-tauid_pt_file = ROOT.TFile(loc+'/TauID_SF_pt_DeepTau2017v2p1VSjet_UL2018.root')
-for i in ['VVVLoose', 'VVLoose', 'VLoose', 'Loose', 'Medium', 'Tight', 'VTight', 'VVTight']:
-  for j in ['cent', 'up', 'down']:
-    fname = '%s_%s' % (i,j)
-    fit = tauid_pt_file.Get(fname)
-    outname = i.lower()
-    if j != 'cent': outname+='_%s' % j
-    sf_funcs[outname] = fit.GetTitle()
-
-for x in sf_funcs:
-  func = re.sub('x','@0',sf_funcs[x])
-  w.factory('expr::t_deeptauid_pt_%s("%s",t_pt[0])' % (x, func))
-
-for i in ['vvvloose', 'vvloose', 'vloose', 'loose', 'medium', 'tight', 'vtight', 'vvtight']:
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin1_up("(@0>20&&@0<=25)*@1 + ((@0>20&&@0<=25)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin1_down("(@0>20&&@0<=25)*@1 + ((@0>20&&@0<=25)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin2_up("(@0>25&&@0<=30)*@1 + ((@0>25&&@0<=30)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin2_down("(@0>25&&@0<=30)*@1 + ((@0>25&&@0<=30)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin3_up("(@0>30&&@0<=35)*@1 + ((@0>30&&@0<=35)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin3_down("(@0>30&&@0<=35)*@1 + ((@0>30&&@0<=35)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin4_up("(@0>35&&@0<=40)*@1 + ((@0>35&&@0<=40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin4_down("(@0>35&&@0<=40)*@1 + ((@0>35&&@0<=40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin5_up("(@0>40&&@0<=500)*@1 + ((@0>40&&@0<=500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin5_down("(@0>40&&@0<=500)*@1 + ((@0>40&&@0<=500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  #w.factory('expr::t_deeptauid_pt_%(i)s_bin5_up("(@0>40)*@1 + ((@0>40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  #w.factory('expr::t_deeptauid_pt_%(i)s_bin5_down("(@0>40)*@1 + ((@0>40)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin6_up("(@0>500)*@1 + ((@0>500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_up, t_deeptauid_pt_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_pt_%(i)s_bin6_down("(@0>500)*@1 + ((@0>500)==0)*@2",t_pt[0], t_deeptauid_pt_%(i)s_down, t_deeptauid_pt_%(i)s)' % vars())
-
-  w.factory('expr::t_deeptauid_dm_%(i)s_bin6_up("((@0>500)*@1/@2 + ((@0>500)==0))*@3",t_pt[0], t_deeptauid_pt_%(i)s_bin6_up, t_deeptauid_pt_%(i)s, t_deeptauid_dm_%(i)s)' % vars())
-  w.factory('expr::t_deeptauid_dm_%(i)s_bin6_down("((@0>500)*@1/@2 + ((@0>500)==0))*@3",t_pt[0], t_deeptauid_pt_%(i)s_bin6_down, t_deeptauid_pt_%(i)s, t_deeptauid_dm_%(i)s)' % vars())
+tauid_file = ROOT.TFile(loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetLoose_VSeleVVLoose_Mar07.root')
+for j in ["DM$DM_$ERA_fit","DM$DM_$ERA_fit_uncert0_up","DM$DM_$ERA_fit_uncert0_down","DM$DM_$ERA_fit_uncert1_up","DM$DM_$ERA_fit_uncert1_down","DM$DM_$ERA_syst_alleras_up_fit","DM$DM_$ERA_syst_alleras_down_fit","DM$DM_$ERA_syst_$ERA_up_fit","DM$DM_$ERA_syst_$ERA_down_fit","DM$DM_$ERA_syst_dm$DM_$ERA_up_fit","DM$DM_$ERA_syst_dm$DM_$ERA_down_fit"]:
+   function = j + "(\""
+   if "$ERA" in j: function = function.replace("$ERA","2018")
+   if "$DM" in j: function = function.replace("$DM","")
+   for k,i in enumerate(["0","1","10","11"]):
+      fname = j
+      if "$ERA" in fname: fname = fname.replace("$ERA","2018")
+      if "$DM" in fname: fname = fname.replace("$DM",i)
+      fit = tauid_file.Get(fname)
+      p0 = fit.GetParameter("0")
+      p1 = fit.GetParameter("1")
+      if k !=3: function += "((@0 == {})*({} + {}*@1)) + ".format(i,p0,p1)
+      else: function += "((@0 == {})*({} + {}*@1))".format(i,p0,p1)
+   w.factory('expr::{}\",t_dm[0],t_pt[0])'.format(function))   
 
 # l->tau fake scale factors
 loc='inputs/2018UL/TauPOGID/'
