@@ -125,23 +125,28 @@ for wp in tau_id_wps:
 w.factory('expr::t_dm_bounded("(@0<2)*@0 +(@0==2)*1 + (@0>2&&@0<11)*10 + (@0>10)*11" ,t_dm[0])')
 
 # dm and pT-dependent SFs
-loc = 'inputs/2018UL/TauPOGID' # all years within same root file
-sf_funcs = {}
-tauid_file = ROOT.TFile(loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetLoose_VSeleVVLoose_Mar07.root')
-for j in ["DM$DM_$ERA_fit","DM$DM_$ERA_fit_uncert0_up","DM$DM_$ERA_fit_uncert0_down","DM$DM_$ERA_fit_uncert1_up","DM$DM_$ERA_fit_uncert1_down","DM$DM_$ERA_syst_alleras_up_fit","DM$DM_$ERA_syst_alleras_down_fit","DM$DM_$ERA_syst_$ERA_up_fit","DM$DM_$ERA_syst_$ERA_down_fit","DM$DM_$ERA_syst_dm$DM_$ERA_up_fit","DM$DM_$ERA_syst_dm$DM_$ERA_down_fit"]:
-   function = j + "(\""
-   if "$ERA" in j: function = function.replace("$ERA","2017")
-   if "$DM" in j: function = function.replace("$DM","")
-   for k,i in enumerate(["0","1","10","11"]):
-      fname = j
-      if "$ERA" in fname: fname = fname.replace("$ERA","2017")
-      if "$DM" in fname: fname = fname.replace("$DM",i)
-      fit = tauid_file.Get(fname)
-      p0 = fit.GetParameter("0")
-      p1 = fit.GetParameter("1")
-      if k !=3: function += "((@0 == {})*({} + {}*@1)) + ".format(i,p0,p1)
-      else: function += "((@0 == {})*({} + {}*@1))".format(i,p0,p1)
-   w.factory('expr::{}\",t_dm[0],t_pt[0])'.format(function))
+loc = 'inputs/2018UL/TauPOGID' # all SFs in the same root file
+vsJets_wp = ["Loose","Medium","Tight"]
+VsEle_wp = ["VVLoose","Tight"]
+for jets_wp in vsJets_wp:
+   for ele_wp in VsEle_wp:
+      tauid_file = ROOT.TFile(loc+'/TauID_SF_dm_DeepTau2017v2p1VSjet_VSjet{}_VSele{}_Mar07.root'.format(jets_wp,ele_wp))
+      for j in ["DM$DM_$ERA_fit","DM$DM_$ERA_fit_uncert0_up","DM$DM_$ERA_fit_uncert0_down","DM$DM_$ERA_fit_uncert1_up","DM$DM_$ERA_fit_uncert1_down","DM$DM_$ERA_syst_alleras_up_fit","DM$DM_$ERA_syst_alleras_down_fit","DM$DM_$ERA_syst_$ERA_up_fit","DM$DM_$ERA_syst_$ERA_down_fit","DM$DM_$ERA_syst_dm$DM_$ERA_up_fit","DM$DM_$ERA_syst_dm$DM_$ERA_down_fit"]:
+         function = "tauID_VsJets" + jets_wp + "_VsEle"+ ele_wp + "_" + j +"(\""
+         if "$ERA" in j: function = function.replace("$ERA","2017")
+         if "$DM" in j: function = function.replace("$DM","")
+         for k,i in enumerate(["0","1","10","11"]):
+            fname = j
+            if "$ERA" in fname: fname = fname.replace("$ERA","2017")
+            if "$DM" in fname: fname = fname.replace("$DM",i)
+            fit = tauid_file.Get(fname)
+            p0 = fit.GetParameter("0")
+            p1 = fit.GetParameter("1")
+            if k == 1: function += "((@0 == {} || @0 == 2)*({} + {}*@1)) + ".format(i,p0,p1)
+            elif k != 3: function += "((@0 == {})*({} + {}*@1)) + ".format(i,p0,p1)
+            else: function += "((@0 == {})*({} + {}*@1))".format(i,p0,p1)
+         w.factory('expr::{}\",t_dm[0],t_pt[0])'.format(function))
+
 
 # l->tau fake scale factors - Updated for Ultra Legacy Samples
 loc='inputs/2017UL/TauPOGID/'
