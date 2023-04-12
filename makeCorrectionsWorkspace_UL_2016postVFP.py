@@ -61,6 +61,22 @@ for task in histsToWrap:
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_pt', [10., 20., 500.],
                                    'e_trk_ratio', ['e_trk_ST20_ratio', 'e_trk_GT20_ratio'])
 
+###############################################
+###  Electron ID efficiency from EGammaPOG  ###
+###############################################
+loc = 'inputs/2016UL_postVFP/EGammaPOG'
+
+histsToWrap = [
+    (loc+'/egammaEffi.txt_Ele_wp90noiso_postVFP_EGM2D.root:EGamma_EffData2D', 'e_id_data'),
+    (loc+'/egammaEffi.txt_Ele_wp90noiso_postVFP_EGM2D.root:EGamma_EffMC2D', 'e_id_mc'),
+]
+
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['e_eta', 'e_pt'],
+                          GetFromTFile(task[0]), name=task[1])
+                                                      
+w.factory('expr::e_id_ratio("@0/@1", e_id_data, e_id_mc)' % vars())  
+
 #######################################
 ### deepTau Trigger SFs from TauPOG ###
 #######################################
