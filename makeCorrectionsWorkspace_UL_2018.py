@@ -225,18 +225,11 @@ histsToWrap = [
 
 for task in histsToWrap:
    wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], GetFromTFile(task[0]), name=task[1])
-   if 'ratio' in task[1]:
-      uncert_hists = wsptools.UncertsFromHist2D(GetFromTFile(task[0]))
-      wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[0], name=task[1]+'_abs_up')
-      wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[1], name=task[1]+'_abs_down')
-      w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
-      w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
-   else:
-      uncert_hists = wsptools.UncertsFromHist(GetFromTFile(task[0]))
-      wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[0], name=task[1]+'_abs_up')
-      wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[1], name=task[1]+'_abs_down')
-      w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
-      w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
+   uncert_hists = wsptools.UncertsFromHist2D(GetFromTFile(task[0]))
+   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[0], name=task[1]+'_abs_up')
+   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[1], name=task[1]+'_abs_down')
+   w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
+   w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
 
 w.factory('expr::e_idiso_ic_data("@0*@1", e_id_ic_data, e_iso_ic_data)')
 w.factory('expr::e_idiso_ic_mc("@0*@1", e_id_ic_mc, e_iso_ic_mc)')

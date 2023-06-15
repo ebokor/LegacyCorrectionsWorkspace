@@ -64,6 +64,23 @@ def UncertsFromHist(hist):
       hist_down.SetBinContent(i, hist_down.GetBinError(i))
     return (hist_up,hist_down)
 
+def UncertsFromHist2D(hist):
+    x_nbins = hist.GetNbinsX()
+    y_nbins = hist.GetNbinsY()
+    hist_up = hist.Clone()
+    hist_down = hist.Clone()
+    hist_up.SetName(hist.GetName()+'_up')
+    hist_up.SetTitle(hist.GetTitle()+'_up')
+    hist_down.SetName(hist.GetName()+'_down')
+    hist_down.SetTitle(hist.GetTitle()+'_down')
+
+    for i in xrange(0, x_nbins+1):
+      for j in xrange(0,y_nbins+1):
+         hist_up.SetBinContent(i,j, hist_up.GetBinError(i,j))
+         #print("BinErroris",hist_up.GetBinError(i,j))
+         hist_down.SetBinContent(i,j, hist_down.GetBinError(i,j))
+    return (hist_up,hist_down)
+
 def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
     # Use the histogram name for this function unless a new name has
     # been specified
