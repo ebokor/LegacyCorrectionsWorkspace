@@ -286,11 +286,15 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
                                    'm_trg_binned_ic_data', ['m_trg_ic_data', 'm_trg_ic_data', 'm_trg_ic_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
                                    'm_trg_binned_ic_mc', ['m_trg_ic_mc', 'm_trg_ic_mc', 'm_trg_ic_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
+                                   'm_trg_binned_ic_embed', ['m_trg_ic_embed', 'm_trg_ic_embed', 'm_trg_ic_embed'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
                                    'm_iso_binned_ic_data', ['m_iso_ic_data', 'm_iso_ic_data', 'm_iso_ic_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
                                    'm_iso_binned_ic_mc', ['m_iso_ic_mc', 'm_iso_ic_mc', 'm_iso_ic_mc'])                                   
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
+                                   'm_iso_binned_ic_embed', ['m_iso_ic_embed', 'm_iso_ic_embed', 'm_iso_ic_embed'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
                                    'm_trg_8_binned_ic_data', ['m_trg_8_ic_data', 'm_trg_8_ic_data'])
@@ -359,7 +363,7 @@ w.factory('expr::m_sel_id_ic_ratio("min(1./@0,20)", m_sel_id_ic_data)')
 
 # zpt_reweighting LO & NLO
 histsToWrap = [
-    ('inputs/zpt/zpt_reweighting_LO.root:zptmass_histo', 'zptmass_weight_nom')
+    ('inputs/zpt/zpt_reweighting_LO.root:zptmass_histo', 'zptmass_weight_nom'),
     ('inputs/zpt/zpt_reweighting_NLO.root:zptmass_histo', 'zptmass_weight_nom_NLO')
 ]
 
