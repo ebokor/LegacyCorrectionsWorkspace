@@ -330,7 +330,6 @@ for i in ['trg', 'trg_8', 'trg_23', 'id', 'iso', 'looseiso', 'idiso', 'idlooseis
 # ask about id
 
 histsToWrap = [
-    (loc+'dimuLow/muon_SFs.root:data_id_eff', 'm_sel_id_ic_1_data'),
     (loc+'dimuLow/muon_SFs.root:data_trg_eff', 'm_sel_trg_8_ic_1_data'),
     (loc+'dimuHigh/muon_SFs.root:data_trg_eff', 'm_sel_trg_17_ic_1_data'),
 ]
@@ -340,7 +339,6 @@ for task in histsToWrap:
                           GetFromTFile(task[0]), name=task[1])
                           
 histsToWrap = [
-    (loc+'dimuLow/muon_SFs.root:data_id_eff', 'm_sel_id_ic_2_data'),
     (loc+'dimuLow/muon_SFs.root:data_trg_eff', 'm_sel_trg_8_ic_2_data'),
     (loc+'dimuHigh/muon_SFs.root:data_trg_eff', 'm_sel_trg_17_ic_2_data'),
 ]
@@ -349,11 +347,11 @@ for task in histsToWrap:
     wsptools.SafeWrapHist(w, ['gt2_pt', 'expr::gt2_abs_eta("TMath::Abs(@0)",gt2_eta[0])'],
                           GetFromTFile(task[0]), name=task[1])
                           
-w.factory('expr::m_sel_trg_ic_data("0.9989*(@0*@3+@1*@2-@1*@3)", m_sel_trg_8_ic_1_data, m_sel_trg_17_ic_1_data, m_sel_trg_8_ic_2_data, m_sel_trg_17_ic_2_data)')
+w.factory('expr::m_sel_trg_ic_data("0.9957*(@0*@3+@1*@2-@1*@3)", m_sel_trg_8_ic_1_data, m_sel_trg_17_ic_1_data, m_sel_trg_8_ic_2_data, m_sel_trg_17_ic_2_data)')
 w.factory('expr::m_sel_trg_ic_ratio("min(1./@0,20)", m_sel_trg_ic_data)')              
 
 wsptools.SafeWrapHist(w, ['gt_pt', 'expr::gt_abs_eta("TMath::Abs(@0)",gt_eta[0])'],
-                          GetFromTFile(loc+'dimuLow/muon_SFs.root:data_id_eff'), 'm_sel_id_ic_data')        
+                          GetFromTFile(loc+'dimuHigh/muon_SFs.root:data_id_eff'), 'm_sel_id_ic_data')        
 
 w.factory('expr::m_sel_id_ic_ratio("min(1./@0,20)", m_sel_id_ic_data)')   
 
