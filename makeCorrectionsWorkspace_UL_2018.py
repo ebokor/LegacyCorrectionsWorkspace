@@ -201,14 +201,20 @@ histsToWrap = [
 
     (loc+'singleElec/electron_SFs.root:data_id_eff', 'e_id_ic_data'),
     (loc+'singleElec/electron_SFs.root:ZLL_id_eff', 'e_id_ic_mc'),
+    (loc+'singleElec/electron_SFs.root:embed_id_eff', 'm_id_ic_embed'),
+    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_id', 'e_id_ic_embed_ratio'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_id', 'e_id_ic_ratio'),
 
     (loc+'singleElec/electron_SFs.root:data_iso_eff', 'e_iso_ic_data'),
     (loc+'singleElec/electron_SFs.root:ZLL_iso_eff', 'e_iso_ic_mc'),
+    (loc+'singleElec/electron_SFs.root:embed_iso_eff', 'm_id_iso_embed'),
+    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_iso', 'e_id_iso_embed_ratio'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_iso', 'e_iso_ic_ratio'),
 
     (loc+'singleElec/electron_SFs.root:data_trg_eff', 'e_trg_ic_data'),
     (loc+'singleElec/electron_SFs.root:ZLL_trg_eff', 'e_trg_ic_mc'),
+    (loc+'singleElec/electron_SFs.root:embed_trg_eff', 'm_id_trg_embed'),
+    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_trg', 'e_id_trg_embed_ratio'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_trg', 'e_trg_ic_ratio'),
 
 # We temporararily disable this since we have not derived this yet
@@ -233,15 +239,18 @@ for task in histsToWrap:
 
 w.factory('expr::e_idiso_ic_data("@0*@1", e_id_ic_data, e_iso_ic_data)')
 w.factory('expr::e_idiso_ic_mc("@0*@1", e_id_ic_mc, e_iso_ic_mc)')
+w.factory('expr::e_idiso_ic_embed("@0*@1", e_id_ic_embed, e_iso_ic_embed)')
 w.factory('expr::e_idiso_ic_ratio("@0*@1", e_id_ic_ratio, e_iso_ic_ratio)')
+w.factory('expr::e_idiso_ic_embed_ratio("@0*@1", e_id_ic_embed_ratio, e_iso_ic_embed_ratio)')
 
 for variation in ["up","down"]
       if variation == "up": var = "_up"
       elif variation == "down": var = "_down"
-      w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_id_iso_data,e_idiso_data)'.format(var))
-      w.factory('expr::e_idiso_ic_mc{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_mc{0},e_id_ic_mc,e_iso_ic_mc{0},e_id_iso_mc,e_idiso_ic_mc)'.format(var))
-      w.factory('expr::e_idiso_ic_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_ratio{0},e_id_ic_ratio,e_iso_ic_ratio{0},e_id_iso_ratio,e_idiso_ic_ratio)'.format(var))
-                          
+      w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_iso_ic_data,e_idiso_data)'.format(var))
+      w.factory('expr::e_idiso_ic_mc{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_mc{0},e_id_ic_mc,e_iso_ic_mc{0},e_iso_ic_mc,e_idiso_ic_mc)'.format(var))
+      w.factory('expr::e_idiso_ic_embed{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed{0},e_id_ic_embed,e_iso_ic_embed{0},e_iso_ic_embed,e_idiso_ic_embed)'.format(var))
+      w.factory('expr::e_idiso_ic_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_ratio{0},e_id_ic_ratio,e_iso_ic_ratio{0},e_iso_ic_ratio,e_idiso_ic_ratio)'.format(var))
+      w.factory('expr::e_idiso_ic_embed_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed_ratio{0},e_id_ic_embed_ratio,e_iso_ic_embed_ratio{0},e_iso_ic_embed_ratio,e_idiso_ic_embed_ratio)'.format(var))
 
 ###########################################
 ### IC muon id, iso, trigger SFs for MC ###
