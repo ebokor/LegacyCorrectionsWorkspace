@@ -374,6 +374,15 @@ wsptools.SafeWrapHist(w, ['gt_pt', 'expr::gt_abs_eta("TMath::Abs(@0)",gt_eta[0])
 
 w.factory('expr::m_sel_id_ic_ratio("min(1./@0,20)", m_sel_id_ic_data)')
 
+# zpt_reweighting LO & NLO
+histsToWrap = [
+    ('inputs/zpt/zpt_reweighting_LO.root:zptmass_histo', 'zptmass_weight_nom')
+    ('inputs/zpt/zpt_reweighting_NLO.root:zptmass_histo', 'zptmass_weight_nom_NLO')
+]
+
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['z_gen_mass', 'z_gen_pt'],
+                          GetFromTFile(task[0]), name=task[1])
 
 w.importClassCode('CrystalBallEfficiency')
 w.Print()
