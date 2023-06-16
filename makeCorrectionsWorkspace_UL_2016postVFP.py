@@ -200,20 +200,20 @@ histsToWrap = [
 
     (loc+'singleElec/electron_SFs.root:data_id_eff', 'e_id_ic_data'),
     (loc+'singleElec/electron_SFs.root:ZLL_id_eff', 'e_id_ic_mc'),
-    (loc+'singleElec/electron_SFs.root:embed_id_eff', 'm_id_ic_embed'),
+    (loc+'singleElec/electron_SFs.root:embed_id_eff', 'e_id_ic_embed'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_id', 'e_id_ic_embed_ratio'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_id', 'e_id_ic_ratio'),
-    
+
     (loc+'singleElec/electron_SFs.root:data_iso_eff', 'e_iso_ic_data'),
     (loc+'singleElec/electron_SFs.root:ZLL_iso_eff', 'e_iso_ic_mc'),
-    (loc+'singleElec/electron_SFs.root:embed_iso_eff', 'm_id_iso_embed'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_iso', 'e_id_iso_embed_ratio'),
+    (loc+'singleElec/electron_SFs.root:embed_iso_eff', 'e_iso_ic_embed'),
+    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_iso', 'e_iso_ic_embed_ratio'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_iso', 'e_iso_ic_ratio'),
-    
+
     (loc+'singleElec/electron_SFs.root:data_trg_eff', 'e_trg_ic_data'),
     (loc+'singleElec/electron_SFs.root:ZLL_trg_eff', 'e_trg_ic_mc'),
-    (loc+'singleElec/electron_SFs.root:embed_trg_eff', 'm_id_trg_embed'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_trg', 'e_id_trg_embed_ratio'),
+    (loc+'singleElec/electron_SFs.root:embed_trg_eff', 'e_trg_ic_embed'),
+    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_trg', 'e_trg_ic_embed_ratio'),
     (loc+'singleElec/electron_SFs.root:ScaleFactor_trg', 'e_trg_ic_ratio'),
     
 # We temporararily disable this since we have not derived this yet
@@ -241,7 +241,7 @@ w.factory('expr::e_idiso_ic_embed_ratio("@0*@1", e_id_ic_embed_ratio, e_iso_ic_e
 for variation in ["up","down"]
       if variation == "up": var = "_up"
       elif variation == "down": var = "_down"
-      w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_iso_ic_data,e_idiso_data)'.format(var))
+      w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_iso_ic_data,e_idiso_ic_data)'.format(var))
       w.factory('expr::e_idiso_ic_mc{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_mc{0},e_id_ic_mc,e_iso_ic_mc{0},e_iso_ic_mc,e_idiso_ic_mc)'.format(var))
       w.factory('expr::e_idiso_ic_embed{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed{0},e_id_ic_embed,e_iso_ic_embed{0},e_iso_ic_embed,e_idiso_ic_embed)'.format(var))
       w.factory('expr::e_idiso_ic_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_ratio{0},e_id_ic_ratio,e_iso_ic_ratio{0},e_iso_ic_ratio,e_idiso_ic_ratio)'.format(var))
@@ -254,100 +254,66 @@ for variation in ["up","down"]
 loc = 'inputs/2016UL_postVFP/ICSF/tpzmm/'
 
 histsToWrap = [
-    (loc+'singleMu/muon_SFs.root:data_trg_eff', 'm_trg_ic_data'),
-    (loc+'singleMu/muon_SFs.root:ZLL_trg_eff', 'm_trg_ic_mc'),
-    (loc+'singleMu/muon_SFs.root:embed_trg_eff', 'm_trg_ic_embed'),
+    (loc+'singleMu/muon_SFs.root:data_id_eff', 'm_id_ic_data'),
+    (loc+'singleMu/muon_SFs.root:ZLL_id_eff', 'm_id_ic_mc'),
+    (loc+'singleMu/muon_SFs.root:embed_id_eff', 'm_id_ic_embed'),
+    (loc+'singleMu/muon_SFs.root:ScaleFactor_EMB_id', 'm_id_ic_embed_ratio'),
+    (loc+'singleMu/muon_SFs.root:ScaleFactor_id', 'm_id_ic_ratio'),
 
     (loc+'singleMu/muon_SFs.root:data_iso_eff', 'm_iso_ic_data'),
     (loc+'singleMu/muon_SFs.root:ZLL_iso_eff', 'm_iso_ic_mc'),
     (loc+'singleMu/muon_SFs.root:embed_iso_eff', 'm_iso_ic_embed'),
+    (loc+'singleMu/muon_SFs.root:ScaleFactor_EMB_iso', 'm_iso_ic_embed_ratio'),
+    (loc+'singleMu/muon_SFs.root:ScaleFactor_iso', 'm_iso_ic_ratio'),
 
-    (loc+'singleMu/muon_SFs.root:data_id_eff', 'm_id_ic_data'),
-    (loc+'singleMu/muon_SFs.root:ZLL_id_eff', 'm_id_ic_mc'),
-    (loc+'singleMu/muon_SFs.root:embed_id_eff', 'm_id_ic_embed'),
+    (loc+'singleMu/muon_SFs.root:data_trg_eff', 'm_trg_ic_data'),
+    (loc+'singleMu/muon_SFs.root:ZLL_trg_eff', 'm_trg_ic_mc'),
+    (loc+'singleMu/muon_SFs.root:embed_trg_eff', 'm_trg_ic_embed'),
+    (loc+'singleMu/muon_SFs.root:ScaleFactor_EMB_trg', 'm_trg_ic_embed_ratio'),
+    (loc+'singleMu/muon_SFs.root:ScaleFactor_trg', 'm_trg_ic_ratio'),
         
     #mt
-    (loc+'mt/muon_SFs.root:data_trg_eff', 'm_trg_19_ic_data'),
-    (loc+'mt/muon_SFs.root:ZLL_trg_eff', 'm_trg_19_ic_mc'),
+#    (loc+'mt/muon_SFs.root:data_trg_eff', 'm_trg_19_ic_data'),
+#    (loc+'mt/muon_SFs.root:ZLL_trg_eff', 'm_trg_19_ic_mc'),
         
     #em high and low legs
-    (loc+'emLow/muon_SFs.root:data_trg_eff', 'm_trg_8_ic_data'),
-    (loc+'emLow/muon_SFs.root:ZLL_trg_eff', 'm_trg_8_ic_mc'),
+#    (loc+'emLow/muon_SFs.root:data_trg_eff', 'm_trg_8_ic_data'),
+#    (loc+'emLow/muon_SFs.root:ZLL_trg_eff', 'm_trg_8_ic_mc'),
     
-    (loc+'emLow/muon_SFs.root:data_iso_eff', 'm_looseiso_ic_data'),
-    (loc+'emLow/muon_SFs.root:ZLL_iso_eff', 'm_looseiso_ic_mc'),
+#    (loc+'emLow/muon_SFs.root:data_iso_eff', 'm_looseiso_ic_data'),
+#    (loc+'emLow/muon_SFs.root:ZLL_iso_eff', 'm_looseiso_ic_mc'),
     
-    (loc+'emHigh/muon_SFs.root:data_trg_eff', 'm_trg_23_ic_data'),
-    (loc+'emHigh/muon_SFs.root:ZLL_trg_eff', 'm_trg_23_ic_mc'),
+#    (loc+'emHigh/muon_SFs.root:data_trg_eff', 'm_trg_23_ic_data'),
+#    (loc+'emHigh/muon_SFs.root:ZLL_trg_eff', 'm_trg_23_ic_mc'),
 
-    (loc+'emLow/muon_SFs.root:data_id_eff', 'm_id_ic_data'),
-    (loc+'emLow/muon_SFs.root:ZLL_id_eff', 'm_id_ic_mc'),
+#    (loc+'emLow/muon_SFs.root:data_id_eff', 'm_id_ic_data'),
+#    (loc+'emLow/muon_SFs.root:ZLL_id_eff', 'm_id_ic_mc'),
         
 ]
 
 for task in histsToWrap:
-    wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'],
-                          GetFromTFile(task[0]), name=task[1])
+   wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'], GetFromTFile(task[0]), name=task[1])
+   uncert_hists = wsptools.UncertsFromHist2D(GetFromTFile(task[0]))
+   wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'], uncert_hists[0], name=task[1]+'_abs_up')
+   wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'], uncert_hists[1], name=task[1]+'_abs_down')
+   w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
+   w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
 
+w.factory('expr::m_idiso_ic_data("@0*@1", m_id_ic_data, m_iso_ic_data)')
+w.factory('expr::m_idiso_ic_mc("@0*@1", m_id_ic_mc, m_iso_ic_mc)')
+w.factory('expr::m_idiso_ic_embed("@0*@1", m_id_ic_embed, m_iso_ic_embed)')
+w.factory('expr::m_idiso_ic_ratio("@0*@1", m_id_ic_ratio, m_iso_ic_ratio)')
+w.factory('expr::m_idiso_ic_embed_ratio("@0*@1", m_id_ic_embed_ratio, m_iso_ic_embed_ratio)')
 
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_trg_binned_ic_data', ['m_trg_ic_data', 'm_trg_ic_data', 'm_trg_ic_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_trg_binned_ic_mc', ['m_trg_ic_mc', 'm_trg_ic_mc', 'm_trg_ic_mc'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_trg_binned_ic_embed', ['m_trg_ic_embed', 'm_trg_ic_embed', 'm_trg_ic_embed'])
-
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_iso_binned_ic_data', ['m_iso_ic_data', 'm_iso_ic_data', 'm_iso_ic_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_iso_binned_ic_mc', ['m_iso_ic_mc', 'm_iso_ic_mc', 'm_iso_ic_mc'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_iso_binned_ic_embed', ['m_iso_ic_embed', 'm_iso_ic_embed', 'm_iso_ic_embed'])
-
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
-                                   'm_trg_8_binned_ic_data', ['m_trg_8_ic_data', 'm_trg_8_ic_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
-                                   'm_trg_8_binned_ic_mc', ['m_trg_8_ic_mc', 'm_trg_8_ic_mc'])
-
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
-                                   'm_looseiso_binned_ic_data', ['m_looseiso_ic_data', 'm_looseiso_ic_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
-                                   'm_looseiso_binned_ic_mc', ['m_looseiso_ic_mc', 'm_looseiso_ic_mc'])
-
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
-                                   'm_trg_23_binned_ic_data', ['m_trg_23_ic_data', 'm_trg_23_ic_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.2, 0.50],
-                                   'm_trg_23_binned_ic_mc', ['m_trg_23_ic_mc', 'm_trg_23_ic_mc'])
-                                
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_trg_19_binned_ic_data', ['m_trg_19_ic_data', 'm_trg_19_ic_data', 'm_trg_19_ic_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.25, 0.50],
-                                   'm_trg_19_binned_ic_mc', ['m_trg_19_ic_mc', 'm_trg_19_ic_mc', 'm_trg_19_ic_mc'])
-
-
-
-w.factory('expr::m_idiso_ic_data("@0*@1", m_iso_ic_data, m_id_ic_data)' % vars())
-w.factory('expr::m_idiso_ic_mc("@0*@1", m_iso_ic_mc, m_id_ic_mc)' % vars())
-w.factory('expr::m_idiso_ic_embed("@0*@1", m_iso_ic_embed, m_id_ic_embed)' % vars())
-
-w.factory('expr::m_idiso_binned_ic_data("@0*@1", m_iso_binned_ic_data, m_id_ic_data)' % vars())
-w.factory('expr::m_idiso_binned_ic_mc("@0*@1", m_iso_binned_ic_mc, m_id_ic_mc)' % vars())
-w.factory('expr::m_idiso_binned_ic_embed("@0*@1", m_iso_binned_ic_embed, m_id_ic_embed)' % vars())
-
-w.factory('expr::m_idlooseiso_ic_data("@0*@1", m_looseiso_ic_data, m_id_ic_data)' % vars())
-w.factory('expr::m_idlooseiso_ic_mc("@0*@1", m_looseiso_ic_mc, m_id_ic_mc)' % vars())
-
-w.factory('expr::m_idlooseiso_binned_ic_data("@0*@1", m_looseiso_binned_ic_data, m_id_ic_data)' % vars())
-w.factory('expr::m_idlooseiso_binned_ic_mc("@0*@1", m_looseiso_binned_ic_mc, m_id_ic_mc)' % vars())
-
-for i in ['trg', 'trg_19', 'trg_8', 'trg_23', 'id', 'iso', 'looseiso', 'idiso', 'idlooseiso']:
-  w.factory('expr::m_%(i)s_ic_ratio("@0/@1", m_%(i)s_ic_data, m_%(i)s_ic_mc)' % vars())
-  w.factory('expr::m_%(i)s_binned_ic_ratio("@0/@1", m_%(i)s_binned_ic_data, m_%(i)s_binned_ic_mc)' % vars())
-
-for i in ['trg','id', 'iso', 'idiso']:
-  w.factory('expr::m_%(i)s_ic_embed_ratio("@0/@1", m_%(i)s_ic_data, m_%(i)s_ic_embed)' % vars())
-  w.factory('expr::m_%(i)s_binned_ic_embed_ratio("@0/@1", m_%(i)s_binned_ic_data, m_%(i)s_binned_ic_embed)' % vars())
-
+for variation in ["up","down"]
+      if variation == "up": var = "_up"
+      elif variation == "down": var = "_down"
+      w.factory('expr::m_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),m_id_ic_data{0},m_id_ic_data,m_iso_ic_data{0},m_iso_ic_data,m_idiso_ic_data)'.format(var))
+      w.factory('expr::m_idiso_ic_mc{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),m_id_ic_mc{0},m_id_ic_mc,m_iso_ic_mc{0},m_iso_ic_mc,m_idiso_ic_mc)'.format(var))
+      w.factory('expr::m_idiso_ic_embed{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),m_id_ic_embed{0},m_id_ic_embed,m_iso_ic_embed{0},m_iso_ic_embed,m_idiso_ic_embed)'.format(var))
+      w.factory('expr::m_idiso_ic_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),m_id_ic_ratio{0},m_id_ic_ratio,m_iso_ic_ratio{0},m_iso_ic_ratio,m_idiso_ic_ratio)'.format(var))
+      w.factory('expr::m_idiso_ic_embed_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),m_id_ic_embed_ratio{0},m_id_ic_embed_ratio,m_iso_ic_embed_ratio{0},m_iso_ic_embed_ratio,m_idiso_ic_embed_ratio)'.format(var))
+     
 histsToWrap = [
     (loc+'dimuLow/muon_SFs.root:data_trg_eff', 'm_sel_trg_8_ic_1_data'),
     (loc+'dimuHigh/muon_SFs.root:data_trg_eff', 'm_sel_trg_17_ic_1_data'),
