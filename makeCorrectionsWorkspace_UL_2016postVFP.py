@@ -375,7 +375,10 @@ for task in histsToWrap:
     wsptools.SafeWrapHist(w, ['gt2_pt', 'expr::gt2_abs_eta("TMath::Abs(@0)",gt2_eta[0])'],
                           GetFromTFile(task[0]), name=task[1])
 
-w.factory('expr::m_sel_trg_ic_data("0.9791*(@0*@3+@1*@2-@1*@3)", m_sel_trg_8_ic_1_data, m_sel_trg_17_ic_1_data, m_sel_trg_8_ic_2_data, m_sel_trg_17_ic_2_data)')
+wsptools.SafeWrapHist(w, ['expr::gt1_abs_eta("TMath::Abs(@0)",gt1_eta[0])', 'expr::gt2_abs_eta("TMath::Abs(@0)",gt2_eta[0])'],
+                          GetFromTFile(loc+'dimu_dz_binned/muon_SFs.root:data_trg_eff'), name='m_sel_trg_dz_data')
+
+w.factory('expr::m_sel_trg_ic_data("(@0*@3+@1*@2-@1*@3)*@4", m_sel_trg_8_ic_1_data, m_sel_trg_17_ic_1_data, m_sel_trg_8_ic_2_data, m_sel_trg_17_ic_2_data, m_sel_trg_dz_data)')
 w.factory('expr::m_sel_trg_ic_ratio("min(1./@0,20)", m_sel_trg_ic_data)')
 
 wsptools.SafeWrapHist(w, ['gt_pt', 'expr::gt_abs_eta("TMath::Abs(@0)",gt_eta[0])'],
