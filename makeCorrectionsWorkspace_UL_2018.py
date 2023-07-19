@@ -87,22 +87,21 @@ w.factory('expr::e_id_ratio("@0/@1", e_id_data, e_id_mc)' % vars())
 #######################################
 
 loc = 'inputs/2018UL/TauPOGTrigger/'
-tau_trg_file = ROOT.TFile(loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root')
 #tau_id_wps=['VVVLoose','VVLoose','VLoose','Loose','Medium','Tight']
 tau_id_wps=['Medium']
 
 for wp in tau_id_wps:
   for dm in ['0','1','10','11']:
     histsToWrap = [
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_ratio' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_ratio' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:data_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:mc_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2018UL_tauTriggerEff_DeepTau2017v2p1.root:sf_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:data_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:mc_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:sf_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:data_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:mc_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:sf_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:data_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:mc_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:sf_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_ratio' % (wp.lower(),dm)),
     ]
     for task in histsToWrap:
         wsptools.SafeWrapHist(w, ['t_pt'],
@@ -243,7 +242,7 @@ w.factory('expr::e_idiso_ic_embed("@0*@1", e_id_ic_embed, e_iso_ic_embed)')
 w.factory('expr::e_idiso_ic_ratio("@0*@1", e_id_ic_ratio, e_iso_ic_ratio)')
 w.factory('expr::e_idiso_ic_embed_ratio("@0*@1", e_id_ic_embed_ratio, e_iso_ic_embed_ratio)')
 
-for variation in ["up","down"]
+for variation in ["up","down"]:
       if variation == "up": var = "_up"
       elif variation == "down": var = "_down"
       w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_iso_ic_data,e_idiso_ic_data)'.format(var))
