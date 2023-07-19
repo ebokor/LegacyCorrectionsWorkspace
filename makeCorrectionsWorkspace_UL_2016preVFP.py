@@ -82,22 +82,21 @@ w.factory('expr::e_id_ratio("@0/@1", e_id_data, e_id_mc)' % vars())
 #######################################
 
 loc = 'inputs/2016UL_preVFP/TauPOGTrigger/'
-tau_trg_file = ROOT.TFile(loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root')
 #tau_id_wps=['VVVLoose','VVLoose','VLoose','Loose','Medium','Tight']
 tau_id_wps=['Medium']#,'Tight']
 
 for wp in tau_id_wps:
   for dm in ['0','1','10','11']:
     histsToWrap = [
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:data_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:mc_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:sf_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_ratio' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:data_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:mc_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:sf_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_ratio' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:data_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_data' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:mc_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_mc' % (wp.lower(),dm)),
-      (loc+'2016ULpreVFP_tauTriggerEff_DeepTau2017v2p1.root:sf_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:data_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:mc_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:sf_ditau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_ditau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:data_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:mc_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:sf_mutau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_mutau_dm%s_ratio' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:data_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_data' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:mc_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_mc' % (wp.lower(),dm)),
+      (loc+'fitTurnOn_2p5.root:sf_etau_%s_dm%s_fitted' % (wp,dm),  't_trg_pog_deeptau_%s_etau_dm%s_ratio' % (wp.lower(),dm)),
     ]
 
     for task in histsToWrap:
@@ -194,59 +193,59 @@ for task in histsToWrap:
 ###############################################
 ### IC electron id, iso, trigger SFs for MC ###
 ###############################################
-
-loc = 'inputs/2016UL_preVFP/ICSF/tpzee/'
-
-histsToWrap = [
-    
-    (loc+'singleElec/electron_SFs.root:data_id_eff', 'e_id_ic_data'),
-    (loc+'singleElec/electron_SFs.root:ZLL_id_eff', 'e_id_ic_mc'),
-    (loc+'singleElec/electron_SFs.root:embed_id_eff', 'e_id_ic_embed'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_id', 'e_id_ic_embed_ratio'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_id', 'e_id_ic_ratio'),
-
-    (loc+'singleElec/electron_SFs.root:data_iso_eff', 'e_iso_ic_data'),
-    (loc+'singleElec/electron_SFs.root:ZLL_iso_eff', 'e_iso_ic_mc'),
-    (loc+'singleElec/electron_SFs.root:embed_iso_eff', 'e_iso_ic_embed'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_iso', 'e_iso_ic_embed_ratio'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_iso', 'e_iso_ic_ratio'),
-
-    (loc+'singleElec/electron_SFs.root:data_trg_eff', 'e_trg_ic_data'),
-    (loc+'singleElec/electron_SFs.root:ZLL_trg_eff', 'e_trg_ic_mc'),
-    (loc+'singleElec/electron_SFs.root:embed_trg_eff', 'e_trg_ic_embed'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_trg', 'e_trg_ic_embed_ratio'),
-    (loc+'singleElec/electron_SFs.root:ScaleFactor_trg', 'e_trg_ic_ratio'),
-
-# We temporararily disable this since we have not derived this yet
-#    (loc+'emLow/electron_SFs.root:data_trg_eff', 'e_trg_12_ic_data'),
-#    (loc+'emLow/electron_SFs.root:ZLL_trg_eff', 'e_trg_12_ic_mc'),
+# commenting this out temporarily till I measure them (Klitos)
+#loc = 'inputs/2016UL_preVFP/ICSF/tpzee/'
 #
-#    (loc+'emHigh/electron_SFs.root:data_trg_eff', 'e_trg_23_ic_data'),
-#    (loc+'emHigh/electron_SFs.root:ZLL_trg_eff', 'e_trg_23_ic_mc'),
-]
-
-for task in histsToWrap:
-   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], GetFromTFile(task[0]), name=task[1])
-   uncert_hists = wsptools.UncertsFromHist2D(GetFromTFile(task[0]))
-   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[0], name=task[1]+'_abs_up')
-   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[1], name=task[1]+'_abs_down')
-   w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
-   w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
-
-w.factory('expr::e_idiso_ic_data("@0*@1", e_id_ic_data, e_iso_ic_data)')
-w.factory('expr::e_idiso_ic_mc("@0*@1", e_id_ic_mc, e_iso_ic_mc)')
-w.factory('expr::e_idiso_ic_embed("@0*@1", e_id_ic_embed, e_iso_ic_embed)')
-w.factory('expr::e_idiso_ic_ratio("@0*@1", e_id_ic_ratio, e_iso_ic_ratio)')
-w.factory('expr::e_idiso_ic_embed_ratio("@0*@1", e_id_ic_embed_ratio, e_iso_ic_embed_ratio)')
-
-for variation in ["up","down"]
-      if variation == "up": var = "_up"
-      elif variation == "down": var = "_down"
-      w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_iso_ic_data,e_idiso_ic_data)'.format(var))
-      w.factory('expr::e_idiso_ic_mc{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_mc{0},e_id_ic_mc,e_iso_ic_mc{0},e_iso_ic_mc,e_idiso_ic_mc)'.format(var))
-      w.factory('expr::e_idiso_ic_embed{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed{0},e_id_ic_embed,e_iso_ic_embed{0},e_iso_ic_embed,e_idiso_ic_embed)'.format(var))
-      w.factory('expr::e_idiso_ic_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_ratio{0},e_id_ic_ratio,e_iso_ic_ratio{0},e_iso_ic_ratio,e_idiso_ic_ratio)'.format(var))
-      w.factory('expr::e_idiso_ic_embed_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed_ratio{0},e_id_ic_embed_ratio,e_iso_ic_embed_ratio{0},e_iso_ic_embed_ratio,e_idiso_ic_embed_ratio)'.format(var))
+#histsToWrap = [
+#    
+#    (loc+'singleElec/electron_SFs.root:data_id_eff', 'e_id_ic_data'),
+#    (loc+'singleElec/electron_SFs.root:ZLL_id_eff', 'e_id_ic_mc'),
+#    (loc+'singleElec/electron_SFs.root:embed_id_eff', 'e_id_ic_embed'),
+#    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_id', 'e_id_ic_embed_ratio'),
+#    (loc+'singleElec/electron_SFs.root:ScaleFactor_id', 'e_id_ic_ratio'),
+#
+#    (loc+'singleElec/electron_SFs.root:data_iso_eff', 'e_iso_ic_data'),
+#    (loc+'singleElec/electron_SFs.root:ZLL_iso_eff', 'e_iso_ic_mc'),
+#    (loc+'singleElec/electron_SFs.root:embed_iso_eff', 'e_iso_ic_embed'),
+#    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_iso', 'e_iso_ic_embed_ratio'),
+#    (loc+'singleElec/electron_SFs.root:ScaleFactor_iso', 'e_iso_ic_ratio'),
+#
+#    (loc+'singleElec/electron_SFs.root:data_trg_eff', 'e_trg_ic_data'),
+#    (loc+'singleElec/electron_SFs.root:ZLL_trg_eff', 'e_trg_ic_mc'),
+#    (loc+'singleElec/electron_SFs.root:embed_trg_eff', 'e_trg_ic_embed'),
+#    (loc+'singleElec/electron_SFs.root:ScaleFactor_EMB_trg', 'e_trg_ic_embed_ratio'),
+#    (loc+'singleElec/electron_SFs.root:ScaleFactor_trg', 'e_trg_ic_ratio'),
+#
+## We temporararily disable this since we have not derived this yet
+##    (loc+'emLow/electron_SFs.root:data_trg_eff', 'e_trg_12_ic_data'),
+##    (loc+'emLow/electron_SFs.root:ZLL_trg_eff', 'e_trg_12_ic_mc'),
+##
+##    (loc+'emHigh/electron_SFs.root:data_trg_eff', 'e_trg_23_ic_data'),
+##    (loc+'emHigh/electron_SFs.root:ZLL_trg_eff', 'e_trg_23_ic_mc'),
+#]
+#
+#for task in histsToWrap:
+#   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], GetFromTFile(task[0]), name=task[1])
+#   uncert_hists = wsptools.UncertsFromHist2D(GetFromTFile(task[0]))
+#   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[0], name=task[1]+'_abs_up')
+#   wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'], uncert_hists[1], name=task[1]+'_abs_down')
+#   w.factory('expr::%s_up("@1+@0",%s_abs_up,%s)' % (task[1],task[1],task[1]))
+#   w.factory('expr::%s_down("@1-@0",%s_abs_down,%s)' % (task[1],task[1],task[1]))
+#
+#w.factory('expr::e_idiso_ic_data("@0*@1", e_id_ic_data, e_iso_ic_data)')
+#w.factory('expr::e_idiso_ic_mc("@0*@1", e_id_ic_mc, e_iso_ic_mc)')
+#w.factory('expr::e_idiso_ic_embed("@0*@1", e_id_ic_embed, e_iso_ic_embed)')
+#w.factory('expr::e_idiso_ic_ratio("@0*@1", e_id_ic_ratio, e_iso_ic_ratio)')
+#w.factory('expr::e_idiso_ic_embed_ratio("@0*@1", e_id_ic_embed_ratio, e_iso_ic_embed_ratio)')
+#
+#for variation in ["up","down"]:
+#      if variation == "up": var = "_up"
+#      elif variation == "down": var = "_down"
+#      w.factory('expr::e_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_data{0},e_id_ic_data,e_iso_ic_data{0},e_iso_ic_data,e_idiso_ic_data)'.format(var))
+#      w.factory('expr::e_idiso_ic_mc{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_mc{0},e_id_ic_mc,e_iso_ic_mc{0},e_iso_ic_mc,e_idiso_ic_mc)'.format(var))
+#      w.factory('expr::e_idiso_ic_embed{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed{0},e_id_ic_embed,e_iso_ic_embed{0},e_iso_ic_embed,e_idiso_ic_embed)'.format(var))
+#      w.factory('expr::e_idiso_ic_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_ratio{0},e_id_ic_ratio,e_iso_ic_ratio{0},e_iso_ic_ratio,e_idiso_ic_ratio)'.format(var))
+#      w.factory('expr::e_idiso_ic_embed_ratio{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),e_id_ic_embed_ratio{0},e_id_ic_embed_ratio,e_iso_ic_embed_ratio{0},e_iso_ic_embed_ratio,e_idiso_ic_embed_ratio)'.format(var))
 
 ###########################################
 ### IC muon id, iso, trigger SFs for MC ###
@@ -306,7 +305,7 @@ w.factory('expr::m_idiso_ic_embed("@0*@1", m_id_ic_embed, m_iso_ic_embed)')
 w.factory('expr::m_idiso_ic_ratio("@0*@1", m_id_ic_ratio, m_iso_ic_ratio)')
 w.factory('expr::m_idiso_ic_embed_ratio("@0*@1", m_id_ic_embed_ratio, m_iso_ic_embed_ratio)')
 
-for variation in ["up","down"]
+for variation in ["up","down"]:
       if variation == "up": var = "_up"
       elif variation == "down": var = "_down"
       w.factory('expr::m_idiso_ic_data{0}("TMath::Power(TMath::Power((@0/@1),2) + TMath::Power((@2/@3),2),0.5)*(@4),m_id_ic_data{0},m_id_ic_data,m_iso_ic_data{0},m_iso_ic_data,m_idiso_ic_data)'.format(var))
