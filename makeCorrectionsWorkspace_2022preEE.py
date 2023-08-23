@@ -123,7 +123,7 @@ w.factory('expr::m_id_ic_ratio("@0/@1", m_id_ic_data, m_id_ic_mc)' % vars())
 
 #zpt_reweighting LO & NLO
 histsToWrap = [
-    ('inputs/zpt/zpt_reweighting_LO_2022.root:zptmass_histo', 'zptmass_weight_nom'),
+    ('inputs/zpt/zpt_reweighting_LO_2022preEE.root:zptmass_histo', 'zptmass_weight_nom'),
     #('inputs/zpt/zpt_reweighting_NLO.root:zptmass_histo', 'zptmass_weight_nom_NLO')
 ]
 
@@ -139,6 +139,6 @@ w.importClassCode('CrystalBallEfficiency')
 
 w.Print()
 
-w.writeToFile('output/htt_scalefactors_2022.root')
+w.writeToFile('output/htt_scalefactors_2022preEE.root')
 
 w.Delete()
